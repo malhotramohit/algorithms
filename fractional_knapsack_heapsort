@@ -1,0 +1,87 @@
+# Python program for implementation of heap Sort 
+
+# To heapify subtree rooted at index i. 
+# n is size of heap 
+def heapify(arr, n, i): 
+	largest = i # Initialize largest as root 
+	l = 2 * i + 1	 # left = 2*i + 1 
+	r = 2 * i + 2	 # right = 2*i + 2 
+
+	# See if left child of root exists and is 
+	# greater than root 
+	if l < n and arr[i] > arr[l]: 
+		largest = l 
+
+	# See if right child of root exists and is 
+	# greater than root 
+	if r < n and arr[largest] > arr[r]: 
+		largest = r 
+
+	# Change root, if needed 
+	if largest != i: 
+		arr[i],arr[largest] = arr[largest],arr[i] # swap 
+
+		# Heapify the root. 
+		heapify(arr, n, largest) 
+
+# The main function to sort an array of given size 
+def heapSort(arr): 
+	n = len(arr) 
+
+	# Build a maxheap. 
+	for i in range(n, -1, -1): 
+		heapify(arr, n, i) 
+
+	# One by one extract elements 
+	for i in range(n-1, 0, -1): 
+		arr[i], arr[0] = arr[0], arr[i] # swap 
+		heapify(arr, i, 0) 
+
+def fractional_knapsack(value, weight, capacity):
+    """Return maximum value of items and their fractional amounts.
+ 
+    (max_value, fractions) is returned where max_value is the maximum value of
+    items with total weight not more than capacity.
+    fractions is a list where fractions[i] is the fraction that should be taken
+    of item i, where 0 <= i < total number of items.
+ 
+    value[i] is the value of item i and weight[i] is the weight of item i
+    for 0 <= i < n where n is the number of items.
+ 
+    capacity is the maximum weight.
+    """
+    # index = [0, 1, 2, ..., n - 1] for n items
+    index = list(range(len(value)))
+    # contains ratios of values to weight
+    ratio = [v/w for v, w in zip(value, weight)]
+    # index is sorted according to value-to-weight ratio in decreasing order
+    heapSort(ratio)
+ 
+    max_value = 0
+    fractions = [0]*len(value)
+    for i in index:
+        if weight[i] <= capacity:
+            fractions[i] = 1
+            max_value += value[i]
+            capacity -= weight[i]
+        else:
+            fractions[i] = capacity/weight[i]
+            max_value += value[i]*capacity/weight[i]
+            break
+ 
+    return max_value, fractions , ratio
+ 
+ 
+n = int(input('Enter number of items: '))
+value = input('Enter the values of the {} item(s) in order: '
+              .format(n)).split()
+value = [int(v) for v in value]
+weight = input('Enter the positive weights of the {} item(s) in order: '
+               .format(n)).split()
+weight = [int(w) for w in weight]
+capacity = int(input('Enter maximum weight: '))
+ 
+max_value, fractions , ratio = fractional_knapsack(value, weight, capacity)
+print('The value density of items:', ratio)
+print('The maximum value of items that can be carried:', max_value)
+print('The fractions in which the items should be taken:', fractions)
